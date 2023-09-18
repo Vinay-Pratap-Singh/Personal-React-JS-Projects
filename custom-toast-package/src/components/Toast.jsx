@@ -1,7 +1,14 @@
-const Toast = ({ toastList }) => {
+const Toast = ({ toastList, setToastList }) => {
+  // function to handle toast delete
+  const handleDelete = (index, position) => {
+    const data = { ...toastList };
+    data[position].splice(index, 1);
+    setToastList({ ...data });
+  };
+
   return (
     <>
-      {/* for bottom-left */}
+      {/* for bottom-left toast */}
       <div className="absolute flex flex-col gap-2 bottom-5 left-5 w-80">
         {toastList?.["bottom-left"] &&
           toastList?.["bottom-left"].map((toast, index) => {
@@ -71,7 +78,7 @@ const Toast = ({ toastList }) => {
                 <p className="w-full text-left">{toast?.message}</p>
 
                 {/* close button */}
-                <button>
+                <button onClick={() => handleDelete(index, "bottom-left")}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -92,7 +99,7 @@ const Toast = ({ toastList }) => {
           })}
       </div>
 
-      {/* for bottom-right */}
+      {/* for bottom-right toast */}
       <div className="absolute flex flex-col gap-2 bottom-5 right-5 w-80">
         {toastList?.["bottom-right"] &&
           toastList?.["bottom-right"].map((toast, index) => {
@@ -162,7 +169,7 @@ const Toast = ({ toastList }) => {
                 <p className="w-full text-left">{toast?.message}</p>
 
                 {/* close button */}
-                <button>
+                <button onClick={() => handleDelete(index, "bottom-right")}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -183,7 +190,7 @@ const Toast = ({ toastList }) => {
           })}
       </div>
 
-      {/* for top-right */}
+      {/* for top-right toast */}
       <div className="absolute flex flex-col gap-2 top-5 right-5 w-80">
         {toastList?.["top-right"] &&
           toastList?.["top-right"].map((toast, index) => {
@@ -253,7 +260,7 @@ const Toast = ({ toastList }) => {
                 <p className="w-full text-left">{toast?.message}</p>
 
                 {/* close button */}
-                <button>
+                <button onClick={() => handleDelete(index, "top-right")}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -274,7 +281,7 @@ const Toast = ({ toastList }) => {
           })}
       </div>
 
-      {/* for top-left */}
+      {/* for top-left toast */}
       <div className="absolute flex flex-col gap-2 top-5 left-5 w-80">
         {toastList?.["top-left"] &&
           toastList?.["top-left"].map((toast, index) => {
@@ -344,7 +351,7 @@ const Toast = ({ toastList }) => {
                 <p className="w-full text-left">{toast?.message}</p>
 
                 {/* close button */}
-                <button>
+                <button onClick={() => handleDelete(index, "top-left")}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -365,7 +372,7 @@ const Toast = ({ toastList }) => {
           })}
       </div>
 
-      {/* for top-center */}
+      {/* for top-center toast */}
       <div className="absolute flex flex-col gap-2 top-5 right-[50%] translate-x-[50%] w-80">
         {toastList?.["top-center"] &&
           toastList?.["top-center"].map((toast, index) => {
@@ -435,7 +442,7 @@ const Toast = ({ toastList }) => {
                 <p className="w-full text-left">{toast?.message}</p>
 
                 {/* close button */}
-                <button>
+                <button onClick={() => handleDelete(index, "top-center")}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

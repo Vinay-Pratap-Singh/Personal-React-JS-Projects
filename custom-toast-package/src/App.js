@@ -188,7 +188,7 @@ const App = () => {
           </button>
         </footer>
       </div>
-      <Toast toastList={toastList} />
+      <Toast toastList={toastList} setToastList={setToastList} />
     </div>
   );
 };
