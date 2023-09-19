@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Toast from "./components/Toast";
+import { v4 as uuid } from "uuid";
 
 const App = () => {
   const [data, setData] = useState({
@@ -24,6 +25,43 @@ const App = () => {
     const newData = { ...data };
     newData[name] = value;
     setData({ ...newData });
+  };
+
+  // function to add toast
+  const addNewToast = (type) => {
+    const newData = { ...toastList };
+    const currentPostion = data?.position;
+
+    // creating new toast
+    const newToast = {
+      id: uuid(),
+      position: currentPostion,
+      message: data?.message
+        ? data?.message
+        : type === "success"
+        ? "Data fetched successfully"
+        : type === "error"
+        ? "Internal server error"
+        : "Invalid data provided",
+      duration: data?.checked ? (data?.duration ? data?.duration : 1) : null,
+      type,
+    };
+
+    newData[currentPostion].push(newToast);
+    setToastList({ ...newData });
+
+    // adding set timeout for auto delete
+    if (newToast.duration) {
+      setTimeout(() => {
+        setToastList((prevToastList) => {
+          const updatedData = { ...prevToastList };
+          updatedData[currentPostion] = updatedData[currentPostion].filter(
+            (item) => item.id !== newToast.id
+          );
+          return { ...updatedData };
+        });
+      }, newToast.duration * 1000);
+    }
   };
 
   return (
@@ -62,7 +100,7 @@ const App = () => {
               id="duration"
               name="duration"
               disabled={!data?.checked}
-              defaultValue={!data?.checked ? 5 : null}
+              defaultValue={!data?.checked ? 1 : null}
               className=" border-[1.5px] border-teal-600 outline-none p-1 rounded-md"
               onChange={(event) => handleChange(event)}
             />
@@ -107,22 +145,7 @@ const App = () => {
           {/* success button */}
           <button
             className="py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700"
-            onClick={() => {
-              const newData = { ...toastList };
-              newData[data?.position].push({
-                position: data?.position,
-                message: data?.message
-                  ? data?.message
-                  : "Data fetched successfully",
-                duration: data?.checked
-                  ? data?.duration
-                    ? data?.duration
-                    : 5
-                  : null,
-                type: "success",
-              });
-              setToastList({ ...newData });
-            }}
+            onClick={() => addNewToast("success")}
           >
             Success Toast
           </button>
@@ -130,20 +153,7 @@ const App = () => {
           {/* error button */}
           <button
             className="py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700"
-            onClick={() => {
-              const newData = { ...toastList };
-              newData[data?.position].push({
-                position: data?.position,
-                message: data?.message ? data?.message : "Invalid details",
-                duration: data?.checked
-                  ? data?.duration
-                    ? data?.duration
-                    : 5
-                  : null,
-                type: "error",
-              });
-              setToastList({ ...newData });
-            }}
+            onClick={() => addNewToast("error")}
           >
             Error Toast
           </button>
@@ -151,22 +161,7 @@ const App = () => {
           {/* warning button */}
           <button
             className="py-2 text-white bg-teal-600 rounded-md hover:bg-teal-700"
-            onClick={() => {
-              const newData = { ...toastList };
-              newData[data?.position].push({
-                position: data?.position,
-                message: data?.message
-                  ? data?.message
-                  : "All fields are mandatory",
-                duration: data?.checked
-                  ? data?.duration
-                    ? data?.duration
-                    : 5
-                  : null,
-                type: "warn",
-              });
-              setToastList({ ...newData });
-            }}
+            onClick={() => addNewToast("warn")}
           >
             Warning Toast
           </button>
