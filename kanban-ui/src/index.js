@@ -1,13 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { createContext } from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import Data from "./Database/Data";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
+// creating a context for data
+export const ContextData = createContext();
+
 root.render(
   <React.StrictMode>
-    <App />
+    <ContextData.Provider value={{ ...Data }}>
+      <App />
+    </ContextData.Provider>
   </React.StrictMode>
 );
 
