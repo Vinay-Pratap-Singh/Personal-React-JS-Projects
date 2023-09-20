@@ -88,6 +88,108 @@ const Data = {
         },
       ],
     },
+    {
+      name: "Default Board",
+      todo: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      progress: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      done: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+    },
+    {
+      name: "Default Board",
+      todo: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      progress: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      done: [
+        {
+          id: uuid(),
+          label: {
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          content: "Sample content",
+          date: Date.now(),
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+    },
   ],
 };
 
