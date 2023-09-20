@@ -1,7 +1,32 @@
 import { v4 as uuid } from "uuid";
 
 const Data = {
-  theme: "light",
+  themes: [
+    "light",
+    "dark",
+    "cupcake",
+    "bumblebee",
+    "emerald",
+    "corporate",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "halloween",
+    "garden",
+    "forest",
+    "lofi",
+    "pastel",
+    "fantasy",
+    "wireframe",
+    "black",
+    "luxury",
+    "dracula",
+    "autumn",
+    "business",
+    "night",
+    "coffee",
+    "winter",
+  ],
   label: [
     {
       id: uuid(),

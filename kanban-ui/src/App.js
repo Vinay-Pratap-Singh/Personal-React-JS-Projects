@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ContextData } from ".";
+import { v4 as uuid } from "uuid";
 
 const App = () => {
-  const { theme, label, assignee, board } = useContext(ContextData);
+  const { themes, label, assignee, board } = useContext(ContextData);
+  const [currentTheme, setCurrentTheme] = useState("light");
 
   return (
-    <div className="flex">
+    <div className="flex" data-theme={currentTheme}>
       {/* sidebar */}
       <div className="drawer lg:drawer-open w-fit">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -83,157 +85,168 @@ const App = () => {
       </div>
 
       {/* kanban container */}
-      <main className="w-full ">
+      <main className="container flex flex-col gap-5 p-5">
         {/* for header */}
-        <header>
+        <header className="flex items-center self-end space-x-5">
           {/* add new todo */}
-          <button type="button">Add new todo</button>
+          <button
+            type="button"
+            className="font-bold text-white btn btn-md btn-accent"
+          >
+            Add new todo
+          </button>
 
-          {/* dark and light mode switch */}
-          {theme === "light" ? (
-            <button>
+          {/* for changing the theme */}
+          <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
+            <label tabIndex={0} className="m-1 font-bold btn">
+              Theme{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                stroke-width="2"
                 stroke="currentColor"
-                class="w-6 h-6"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+                  d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"
                 />
               </svg>
-            </button>
-          ) : (
-            <button>
-              {" "}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-                />
-              </svg>
-            </button>
-          )}
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 overflow-y-scroll h-60 flex-nowrap"
+            >
+              {themes?.map((theme) => {
+                return (
+                  <li key={uuid()} onClick={() => setCurrentTheme(theme)}>
+                    <a
+                      href="#"
+                      className={`hover:text-accent hover:font-semibold ${
+                        currentTheme === theme &&
+                        "bg-gray-200 font-semibold text-accent"
+                      }`}
+                    >
+                      {theme}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </header>
 
-        {/* todo container */}
+        {/* body container */}
         <div>
-          <h2>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-              />
-            </svg>
-            <p>Todo</p>
-          </h2>
-          {/* for todo list */}
-          <ul>
-            <li draggable="true">todo 1</li>
-            <li draggable="true">todo 2</li>
-            <li draggable="true">todo 3</li>
-          </ul>
-        </div>
+          {/* todo container */}
+          <div>
+            <h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                />
+              </svg>
+              <p>Todo</p>
+            </h2>
+            {/* for todo list */}
+            <ul>
+              <li draggable="true">todo 1</li>
+              <li draggable="true">todo 2</li>
+              <li draggable="true">todo 3</li>
+            </ul>
+          </div>
 
-        {/* in progress container */}
-        <div>
-          <h2>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
-              />
-            </svg>
-            <p>In Progress</p>
-          </h2>
-          {/* for todo list */}
-          <ul>
-            <li draggable="true">todo 1</li>
-            <li draggable="true">todo 2</li>
-            <li draggable="true">todo 3</li>
-          </ul>
-        </div>
+          {/* in progress container */}
+          <div>
+            <h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
+                />
+              </svg>
+              <p>In Progress</p>
+            </h2>
+            {/* for todo list */}
+            <ul>
+              <li draggable="true">todo 1</li>
+              <li draggable="true">todo 2</li>
+              <li draggable="true">todo 3</li>
+            </ul>
+          </div>
 
-        {/* for review container */}
-        <div>
-          <h2>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-              />
-            </svg>
-            <p>Review</p>
-          </h2>
-          {/* for todo list */}
-          <ul>
-            <li draggable="true">todo 1</li>
-            <li draggable="true">todo 2</li>
-            <li draggable="true">todo 3</li>
-          </ul>
-        </div>
+          {/* for review container */}
+          <div>
+            <h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                />
+              </svg>
+              <p>Review</p>
+            </h2>
+            {/* for todo list */}
+            <ul>
+              <li draggable="true">todo 1</li>
+              <li draggable="true">todo 2</li>
+              <li draggable="true">todo 3</li>
+            </ul>
+          </div>
 
-        {/* completed container */}
-        <div>
-          <h2>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"
-              />
-            </svg>
-            <p>Done</p>
-          </h2>
-          {/* for todo list */}
-          <ul>
-            <li draggable="true">todo 1</li>
-            <li draggable="true">todo 2</li>
-            <li draggable="true">todo 3</li>
-          </ul>
+          {/* completed container */}
+          <div>
+            <h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"
+                />
+              </svg>
+              <p>Done</p>
+            </h2>
+            {/* for todo list */}
+            <ul>
+              <li draggable="true">todo 1</li>
+              <li draggable="true">todo 2</li>
+              <li draggable="true">todo 3</li>
+            </ul>
+          </div>
         </div>
       </main>
     </div>
