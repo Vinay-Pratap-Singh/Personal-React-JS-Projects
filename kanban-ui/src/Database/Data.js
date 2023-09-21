@@ -35,7 +35,7 @@ const Data = {
     },
     {
       id: uuid(),
-      colorCode: "yellow",
+      colorCode: "brown",
       name: "Medium Priority",
     },
     {
@@ -61,18 +61,19 @@ const Data = {
       avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
     },
   ],
-  board: [
+  boards: [
     {
       name: "Default Board",
-      todo: [
+      todos: [
         {
           id: uuid(),
           label: {
+            id: uuid(),
             colorCode: "green",
             name: "Low Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -84,11 +85,29 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      review: [
+        {
+          id: uuid(),
+          label: {
+            id: uuid(),
+            colorCode: "brown",
+            name: "Medium Priority",
+          },
+          content: "Sample content",
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -100,11 +119,12 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -114,16 +134,17 @@ const Data = {
       ],
     },
     {
-      name: "Default Board",
-      todo: [
+      name: "Default Board 2",
+      todos: [
         {
           id: uuid(),
           label: {
+            id: uuid(),
             colorCode: "green",
             name: "Low Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -135,11 +156,29 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      review: [
+        {
+          id: uuid(),
+          label: {
+            id: uuid(),
+            colorCode: "brown",
+            name: "Medium Priority",
+          },
+          content: "Sample content",
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -151,11 +190,12 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -165,16 +205,17 @@ const Data = {
       ],
     },
     {
-      name: "Default Board",
-      todo: [
+      name: "Default Board 3",
+      todos: [
         {
           id: uuid(),
           label: {
+            id: uuid(),
             colorCode: "green",
             name: "Low Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -186,11 +227,29 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+      ],
+      review: [
+        {
+          id: uuid(),
+          label: {
+            id: uuid(),
+            colorCode: "brown",
+            name: "Medium Priority",
+          },
+          content: "Sample content",
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",
@@ -202,11 +261,12 @@ const Data = {
         {
           id: uuid(),
           label: {
-            colorCode: "green",
-            name: "Low Priority",
+            id: uuid(),
+            colorCode: "red",
+            name: "High Priority",
           },
           content: "Sample content",
-          date: Date.now(),
+          date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
             name: "Harvi",

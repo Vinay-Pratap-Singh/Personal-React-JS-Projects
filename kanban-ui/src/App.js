@@ -3,8 +3,10 @@ import { ContextData } from ".";
 import { v4 as uuid } from "uuid";
 
 const App = () => {
-  const { themes, label, assignee, board } = useContext(ContextData);
-  const [currentTheme, setCurrentTheme] = useState("light");
+  const { themes, label, assignee, boards } = useContext(ContextData);
+  const [currentTheme, setCurrentTheme] = useState(
+    localStorage.getItem("theme") || themes[0]
+  );
 
   return (
     <div className="flex" data-theme={currentTheme}>
@@ -43,8 +45,8 @@ const App = () => {
               </h1>
               {/* displaying all the boards */}
               <ul className="space-y-2">
-                {board &&
-                  board?.map((item) => {
+                {boards &&
+                  boards?.map((item) => {
                     return (
                       <li
                         key={item?.id}
@@ -98,21 +100,16 @@ const App = () => {
 
           {/* for changing the theme */}
           <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
-            <label tabIndex={0} className="m-1 font-bold btn">
+            <label tabIndex={0} className="m-1 font-bold btn text-accent">
               Theme{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="none"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                class="w-5 h-5"
+                fill="currentColor"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"
-                />
+                <path d="M8.997 13.985c.01 1.104-.88 2.008-1.986 2.015-1.105.009-2.005-.88-2.011-1.984-.01-1.105.879-2.005 1.982-2.016 1.106-.007 2.009.883 2.015 1.985zm-.978-3.986c-1.104.008-2.008-.88-2.015-1.987-.009-1.103.877-2.004 1.984-2.011 1.102-.01 2.008.877 2.012 1.982.012 1.107-.88 2.006-1.981 2.016zm7.981-4.014c.004 1.102-.881 2.008-1.985 2.015-1.106.01-2.008-.879-2.015-1.983-.011-1.106.878-2.006 1.985-2.015 1.101-.006 2.005.881 2.015 1.983zm-12 15.847c4.587.38 2.944-4.492 7.188-4.537l1.838 1.534c.458 5.537-6.315 6.772-9.026 3.003zm14.065-7.115c1.427-2.239 5.846-9.748 5.846-9.748.353-.623-.429-1.273-.975-.813 0 0-6.572 5.714-8.511 7.525-1.532 1.432-1.539 2.086-2.035 4.447l1.68 1.4c2.227-.915 2.868-1.04 3.995-2.811zm-12.622 4.806c-2.084-1.82-3.42-4.479-3.443-7.447-.044-5.51 4.406-10.03 9.92-10.075 3.838-.021 6.479 1.905 6.496 3.447l1.663-1.456c-1.01-2.223-4.182-4.045-8.176-3.992-6.623.055-11.955 5.466-11.903 12.092.023 2.912 1.083 5.57 2.823 7.635.958.492 2.123.329 2.62-.204zm12.797-1.906c1.059 1.97-1.351 3.37-3.545 3.992-.304.912-.803 1.721-1.374 2.311 5.255-.591 9.061-4.304 6.266-7.889-.459.685-.897 1.197-1.347 1.586z" />
               </svg>
             </label>
             <ul
@@ -121,7 +118,13 @@ const App = () => {
             >
               {themes?.map((theme) => {
                 return (
-                  <li key={uuid()} onClick={() => setCurrentTheme(theme)}>
+                  <li
+                    key={uuid()}
+                    onClick={() => {
+                      setCurrentTheme(theme);
+                      localStorage.setItem("theme", theme);
+                    }}
+                  >
                     <a
                       href="#"
                       className={`hover:text-accent hover:font-semibold ${
@@ -139,17 +142,17 @@ const App = () => {
         </header>
 
         {/* body container */}
-        <div>
+        <div className="flex items-center justify-between gap-5">
           {/* todo container */}
-          <div>
-            <h2>
+          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
+            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
@@ -160,23 +163,50 @@ const App = () => {
               <p>Todo</p>
             </h2>
             {/* for todo list */}
-            <ul>
-              <li draggable="true">todo 1</li>
-              <li draggable="true">todo 2</li>
-              <li draggable="true">todo 3</li>
+            <ul className="flex flex-col gap-2">
+              {boards[0]?.todos?.map((todo) => {
+                return (
+                  <li
+                    key={todo?.id}
+                    draggable="true"
+                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move"
+                  >
+                    <span
+                      style={{ backgroundColor: todo?.label?.colorCode }}
+                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                    >
+                      {todo?.label?.name}
+                    </span>
+                    <h5 className="my-2 font-medium">{todo?.content}</h5>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold"> {todo?.date}</p>
+                      <div
+                        className="tooltip tooltip-accent"
+                        data-tip={todo?.assignee?.name}
+                      >
+                        <img
+                          src={todo?.assignee?.avatar}
+                          alt="user profile"
+                          className="rounded-full w-7 h-7"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           {/* in progress container */}
-          <div>
-            <h2>
+          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
+            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
@@ -187,23 +217,50 @@ const App = () => {
               <p>In Progress</p>
             </h2>
             {/* for todo list */}
-            <ul>
-              <li draggable="true">todo 1</li>
-              <li draggable="true">todo 2</li>
-              <li draggable="true">todo 3</li>
+            <ul className="flex flex-col gap-2">
+              {boards[0]?.progress?.map((todo) => {
+                return (
+                  <li
+                    key={todo?.id}
+                    draggable="true"
+                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move"
+                  >
+                    <span
+                      style={{ backgroundColor: todo?.label?.colorCode }}
+                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                    >
+                      {todo?.label?.name}
+                    </span>
+                    <h5 className="my-2 font-medium">{todo?.content}</h5>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold"> {todo?.date}</p>
+                      <div
+                        className="tooltip tooltip-accent"
+                        data-tip={todo?.assignee?.name}
+                      >
+                        <img
+                          src={todo?.assignee?.avatar}
+                          alt="user profile"
+                          className="rounded-full w-7 h-7"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           {/* for review container */}
-          <div>
-            <h2>
+          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
+            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
@@ -214,23 +271,50 @@ const App = () => {
               <p>Review</p>
             </h2>
             {/* for todo list */}
-            <ul>
-              <li draggable="true">todo 1</li>
-              <li draggable="true">todo 2</li>
-              <li draggable="true">todo 3</li>
+            <ul className="flex flex-col gap-2">
+              {boards[0]?.review?.map((todo) => {
+                return (
+                  <li
+                    key={todo?.id}
+                    draggable="true"
+                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move"
+                  >
+                    <span
+                      style={{ backgroundColor: todo?.label?.colorCode }}
+                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                    >
+                      {todo?.label?.name}
+                    </span>
+                    <h5 className="my-2 font-medium">{todo?.content}</h5>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold"> {todo?.date}</p>
+                      <div
+                        className="tooltip tooltip-accent"
+                        data-tip={todo?.assignee?.name}
+                      >
+                        <img
+                          src={todo?.assignee?.avatar}
+                          alt="user profile"
+                          className="rounded-full w-7 h-7"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           {/* completed container */}
-          <div>
-            <h2>
+          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
+            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-6 h-6"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
@@ -241,10 +325,37 @@ const App = () => {
               <p>Done</p>
             </h2>
             {/* for todo list */}
-            <ul>
-              <li draggable="true">todo 1</li>
-              <li draggable="true">todo 2</li>
-              <li draggable="true">todo 3</li>
+            <ul className="flex flex-col gap-2">
+              {boards[0]?.done?.map((todo) => {
+                return (
+                  <li
+                    key={todo?.id}
+                    draggable="true"
+                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move"
+                  >
+                    <span
+                      style={{ backgroundColor: todo?.label?.colorCode }}
+                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                    >
+                      {todo?.label?.name}
+                    </span>
+                    <h5 className="my-2 font-medium">{todo?.content}</h5>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold"> {todo?.date}</p>
+                      <div
+                        className="tooltip tooltip-accent"
+                        data-tip={todo?.assignee?.name}
+                      >
+                        <img
+                          src={todo?.assignee?.avatar}
+                          alt="user profile"
+                          className="rounded-full w-7 h-7"
+                        />
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
