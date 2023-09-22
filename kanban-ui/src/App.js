@@ -10,19 +10,22 @@ const App = () => {
     localStorage.getItem("theme") || themes[0]
   );
 
-  const handleDragStart = (e, item, targetColumn) => {
-    e.dataTransfer.setData("item", JSON.stringify(item));
-    e.dataTransfer.setData("targetColumn", JSON.stringify(targetColumn));
+  // function to store the dragged item details
+  const handleDragStart = (event, item, targetColumn) => {
+    event.dataTransfer.setData("item", JSON.stringify(item));
+    event.dataTransfer.setData("targetColumn", JSON.stringify(targetColumn));
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleDragOver = (event) => {
+    event.preventDefault();
   };
 
-  const handleDrop = (e, targetColumn) => {
-    e.preventDefault();
-    const item = JSON.parse(e.dataTransfer.getData("item"));
-    const originColumn = JSON.parse(e.dataTransfer.getData("targetColumn"));
+  // function to handle the drop functionality
+  const handleDrop = (event, targetColumn) => {
+    event.preventDefault();
+    const item = JSON.parse(event.dataTransfer.getData("item"));
+    const originColumn = JSON.parse(event.dataTransfer.getData("targetColumn"));
+    if (targetColumn === originColumn) return;
     if (targetColumn === "todos") {
       Data.boards[currentBoard].todos = [
         ...Data?.boards[currentBoard]?.todos,
@@ -44,6 +47,7 @@ const App = () => {
         item,
       ];
     }
+
     // deleting the item from originated targeted column
     Data.boards[currentBoard][originColumn] = Data.boards[currentBoard][
       originColumn
@@ -58,7 +62,7 @@ const App = () => {
       {/* sidebar */}
       <div className="drawer lg:drawer-open w-fit">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="fixed flex flex-col items-center self-start justify-center drawer-content top-3 left-3">
+        <div className="fixed flex flex-col items-center self-start justify-center drawer-content top-6 left-3">
           {/* button for drawer toggle in smaller screen */}
           <label
             htmlFor="my-drawer-2"
@@ -128,7 +132,7 @@ const App = () => {
             {/* button to add new board */}
             <button
               type="button"
-              className="py-2 font-bold text-white btn btn-md btn-accent"
+              className="py-2 font-semibold text-white btn btn-md btn-accent"
             >
               Add new board
             </button>
@@ -137,27 +141,31 @@ const App = () => {
       </div>
 
       {/* kanban container */}
-      <main className="container flex flex-col gap-5 p-5">
+      <main className="container flex flex-col gap-5 py-5 overflow-x-hidden">
         {/* for header */}
-        <header className="flex items-center self-end space-x-5">
+        <header className="flex items-center self-end px-5 space-x-5">
           {/* add new todo */}
           <button
             type="button"
-            className="font-bold text-white btn btn-md btn-accent"
+            className="font-semibold text-white btn lg:btn-md btn-sm btn-accent"
           >
             Add new todo
           </button>
 
           {/* for changing the theme */}
-          <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
-            <label tabIndex={0} className="m-1 font-bold btn text-accent">
-              Theme{" "}
+          <div className="dropdown dropdown-hover dropdown-bottom dropdown-end ">
+            <label
+              tabIndex={0}
+              className="m-1 font-semibold btn btn-sm lg:btn-md text-accent"
+            >
+              <span className="hidden lg:block">Theme</span>{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
                 fill="currentColor"
+                className="w-5 lg:w-8"
               >
                 <path d="M8.997 13.985c.01 1.104-.88 2.008-1.986 2.015-1.105.009-2.005-.88-2.011-1.984-.01-1.105.879-2.005 1.982-2.016 1.106-.007 2.009.883 2.015 1.985zm-.978-3.986c-1.104.008-2.008-.88-2.015-1.987-.009-1.103.877-2.004 1.984-2.011 1.102-.01 2.008.877 2.012 1.982.012 1.107-.88 2.006-1.981 2.016zm7.981-4.014c.004 1.102-.881 2.008-1.985 2.015-1.106.01-2.008-.879-2.015-1.983-.011-1.106.878-2.006 1.985-2.015 1.101-.006 2.005.881 2.015 1.983zm-12 15.847c4.587.38 2.944-4.492 7.188-4.537l1.838 1.534c.458 5.537-6.315 6.772-9.026 3.003zm14.065-7.115c1.427-2.239 5.846-9.748 5.846-9.748.353-.623-.429-1.273-.975-.813 0 0-6.572 5.714-8.511 7.525-1.532 1.432-1.539 2.086-2.035 4.447l1.68 1.4c2.227-.915 2.868-1.04 3.995-2.811zm-12.622 4.806c-2.084-1.82-3.42-4.479-3.443-7.447-.044-5.51 4.406-10.03 9.92-10.075 3.838-.021 6.479 1.905 6.496 3.447l1.663-1.456c-1.01-2.223-4.182-4.045-8.176-3.992-6.623.055-11.955 5.466-11.903 12.092.023 2.912 1.083 5.57 2.823 7.635.958.492 2.123.329 2.62-.204zm12.797-1.906c1.059 1.97-1.351 3.37-3.545 3.992-.304.912-.803 1.721-1.374 2.311 5.255-.591 9.061-4.304 6.266-7.889-.459.685-.897 1.197-1.347 1.586z" />
               </svg>
@@ -191,11 +199,15 @@ const App = () => {
           </div>
         </header>
 
-        {/* body container */}
-        <div className="flex items-start justify-between gap-5">
-          {/* columns container */}
-          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm">
-            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
+        {/* columns container */}
+        <div className="flex items-start justify-between gap-5 p-5 overflow-x-scroll ">
+          {/* todos container */}
+          <div
+            className="self-stretch flex-1 rounded-md shadow-md min-w-[250px]"
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, "todos")}
+          >
+            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -213,18 +225,15 @@ const App = () => {
               <p>Todo</p>
             </h2>
             {/* for todos list */}
-            <ul
-              className="flex flex-col gap-2"
-              id="todo"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, "todos")}
-            >
+            <ul className="flex flex-col gap-5 p-4" id="todo">
               {boards[currentBoard]?.todos?.map((todo) => {
                 return (
                   <li
                     key={todo?.id}
                     draggable="true"
-                    onDragStart={(e) => handleDragStart(e, todo, "todos")}
+                    onDragStart={(event) =>
+                      handleDragStart(event, todo, "todos")
+                    }
                     className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                   >
                     <span
@@ -257,8 +266,12 @@ const App = () => {
           </div>
 
           {/* in progress container */}
-          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm">
-            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
+          <div
+            className="self-stretch flex-1 rounded-md shadow-md min-w-[250px]"
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, "progress")}
+          >
+            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -276,18 +289,15 @@ const App = () => {
               <p>In Progress</p>
             </h2>
             {/* for todo list */}
-            <ul
-              className="flex flex-col gap-2"
-              id="progress"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, "progress")}
-            >
+            <ul className="flex flex-col gap-5 p-4" id="progress">
               {boards[currentBoard]?.progress?.map((todo) => {
                 return (
                   <li
                     key={todo?.id}
                     draggable="true"
-                    onDragStart={(e) => handleDragStart(e, todo, "progress")}
+                    onDragStart={(event) =>
+                      handleDragStart(event, todo, "progress")
+                    }
                     className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                   >
                     <span
@@ -320,8 +330,12 @@ const App = () => {
           </div>
 
           {/* for review container */}
-          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
-            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
+          <div
+            className="self-stretch flex-1 rounded-md shadow-md min-w-[250px]"
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, "review")}
+          >
+            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -339,18 +353,15 @@ const App = () => {
               <p>Review</p>
             </h2>
             {/* for todo list */}
-            <ul
-              className="flex flex-col gap-2"
-              id="review"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, "review")}
-            >
+            <ul className="flex flex-col gap-5 p-4" id="review">
               {boards[currentBoard]?.review?.map((todo) => {
                 return (
                   <li
                     key={todo?.id}
                     draggable="true"
-                    onDragStart={(e) => handleDragStart(e, todo, "review")}
+                    onDragStart={(event) =>
+                      handleDragStart(event, todo, "review")
+                    }
                     className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                   >
                     <span
@@ -383,8 +394,12 @@ const App = () => {
           </div>
 
           {/* completed container */}
-          <div className="flex-1 p-4 space-y-2 rounded-md shadow-sm ">
-            <h2 className="flex items-center justify-center gap-1 text-lg font-bold text-teal-500">
+          <div
+            className="self-stretch flex-1 rounded-md shadow-md min-w-[250px]"
+            onDragOver={handleDragOver}
+            onDrop={(event) => handleDrop(event, "done")}
+          >
+            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -402,18 +417,15 @@ const App = () => {
               <p>Done</p>
             </h2>
             {/* for todo list */}
-            <ul
-              className="flex flex-col gap-2"
-              id="completed"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, "done")}
-            >
+            <ul className="flex flex-col gap-5 p-4" id="completed">
               {boards[0]?.done?.map((todo) => {
                 return (
                   <li
                     key={todo?.id}
                     draggable="true"
-                    onDragStart={(e) => handleDragStart(e, todo, "done")}
+                    onDragStart={(event) =>
+                      handleDragStart(event, todo, "done")
+                    }
                     className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                   >
                     <span
