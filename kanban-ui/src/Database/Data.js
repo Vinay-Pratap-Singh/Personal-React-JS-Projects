@@ -72,7 +72,24 @@ const Data = {
             colorCode: "green",
             name: "Low Priority",
           },
-          content: "Sample content",
+          title: "Sample content",
+          description: "This is a sample content assigned to test the app",
+          date: "Sep 21, 2023, 03:36:07 PM",
+          assignee: {
+            id: uuid(),
+            name: "Harvi",
+            avatar: "https://avatars.githubusercontent.com/u/85826727?v=4",
+          },
+        },
+        {
+          id: uuid(),
+          label: {
+            id: uuid(),
+            colorCode: "green",
+            name: "Low Priority",
+          },
+          title: "Sample content",
+          description: "This is a sample content assigned to test the app",
           date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
@@ -89,7 +106,8 @@ const Data = {
             colorCode: "red",
             name: "High Priority",
           },
-          content: "Sample content",
+          title: "Sample content",
+          description: "This is a sample content assigned to test the app",
           date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
@@ -106,7 +124,8 @@ const Data = {
             colorCode: "brown",
             name: "Medium Priority",
           },
-          content: "Sample content",
+          title: "Sample content",
+          description: "This is a sample content assigned to test the app",
           date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
@@ -123,7 +142,8 @@ const Data = {
             colorCode: "red",
             name: "High Priority",
           },
-          content: "Sample content",
+          title: "Sample content",
+          description: "This is a sample content assigned to test the app",
           date: "Sep 21, 2023, 03:36:07 PM",
           assignee: {
             id: uuid(),
@@ -277,5 +297,9 @@ const Data = {
     },
   ],
 };
+
+// const updateBoardData = (boardIndex,boardColumn,data) => {
+//   Data?.boards[boardIndex]?.[boardColumn]
+// }
 
 export default Data;
