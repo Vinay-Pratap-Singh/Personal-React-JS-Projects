@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import Data from "./Database/Data";
 
 const App = () => {
-  const { themes, label, assignee, boards: myboards } = Data;
+  const { themes, boards: myboards } = Data;
   const [boards, setBoards] = useState([...myboards]);
   const [currentBoard, setCurrentBoard] = useState(0);
   const [currentTheme, setCurrentTheme] = useState(

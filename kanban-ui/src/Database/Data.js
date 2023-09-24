@@ -298,8 +298,4 @@ const Data = {
   ],
 };
 
-// const updateBoardData = (boardIndex,boardColumn,data) => {
-//   Data?.boards[boardIndex]?.[boardColumn]
-// }
-
 export default Data;
