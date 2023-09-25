@@ -57,6 +57,13 @@ const App = () => {
     setBoards([...myboards]);
   };
 
+  // function to delete the board
+  const deleteBoard = () => {
+    Data?.boards?.splice(currentBoard, 1);
+    setBoards([...Data?.boards]);
+    setCurrentBoard(0);
+  };
+
   return (
     <div className="flex" data-theme={currentTheme}>
       {/* sidebar */}
@@ -102,7 +109,7 @@ const App = () => {
                         className="flex items-start text-base font-semibold rounded-md cursor-pointer"
                         onClick={() => setCurrentBoard(index)}
                       >
-                        <p
+                        <div
                           className={`w-full hover:text-accent ${
                             currentBoard === index && "text-accent bg-gray-200"
                           }`}
@@ -122,9 +129,11 @@ const App = () => {
                             />
                           </svg>{" "}
                           <span>{board?.name}</span>
-                          {/* You can open the modal using document.getElementById('ID').showModal() method */}
+                          {/* modal to delete the board */}
                           <button
-                            className="text-red-500"
+                            className={`text-red-500 ${
+                              currentBoard === index ? "block" : "hidden"
+                            }`}
                             onClick={() =>
                               document.getElementById("my_modal_4").showModal()
                             }
@@ -133,13 +142,13 @@ const App = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
-                              stroke-width="2"
+                              strokeWidth="2"
                               stroke="currentColor"
-                              class="w-5 h-5"
+                              className="w-5 h-5"
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
                               />
                             </svg>
@@ -156,13 +165,13 @@ const App = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 24 24"
-                                    stroke-width="1.5"
+                                    strokeWidth="1.5"
                                     stroke="currentColor"
-                                    class="lg:w-20 lg:h-20 h-16 w-16"
+                                    className="w-16 h-16 lg:w-20 lg:h-20"
                                   >
                                     <path
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
                                       d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
                                     />
                                   </svg>
@@ -179,10 +188,10 @@ const App = () => {
                                   method="dialog"
                                   className="flex flex-col w-full gap-3"
                                 >
-                                  {/* if there is a button, it will close the modal */}
                                   <button
-                                    type="button"
+                                    type="submit"
                                     className="text-white bg-red-500 btn hover:bg-red-600"
+                                    onClick={deleteBoard}
                                   >
                                     delete
                                   </button>
@@ -193,7 +202,7 @@ const App = () => {
                               </div>
                             </div>
                           </dialog>
-                        </p>
+                        </div>
                       </li>
                     );
                   })}
@@ -271,263 +280,270 @@ const App = () => {
         </header>
 
         {/* columns container */}
-        <div className="flex items-start justify-between gap-5 p-5 overflow-x-scroll ">
-          {/* todos container */}
-          <div
-            className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
-            onDragOver={handleDragOver}
-            onDrop={(event) => handleDrop(event, "todos")}
-          >
-            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                />
-              </svg>
-              <p>Todo</p>
-            </h2>
-            {/* for todos list */}
-            <ul className="flex flex-col gap-5 p-4" id="todo">
-              {boards[currentBoard]?.todos?.map((todo) => {
-                return (
-                  <li
-                    key={todo?.id}
-                    draggable="true"
-                    onDragStart={(event) =>
-                      handleDragStart(event, todo, "todos")
-                    }
-                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
-                  >
-                    <span
-                      style={{ backgroundColor: todo?.label?.colorCode }}
-                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+        {boards?.length ? (
+          <div className="flex items-start justify-between gap-5 p-5 overflow-x-scroll ">
+            {/* todos container */}
+            <div
+              className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
+              onDragOver={handleDragOver}
+              onDrop={(event) => handleDrop(event, "todos")}
+            >
+              <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                  />
+                </svg>
+                <p>Todo</p>
+              </h2>
+              {/* for todos list */}
+              <ul className="flex flex-col gap-5 p-4" id="todo">
+                {boards[currentBoard]?.todos?.map((todo) => {
+                  return (
+                    <li
+                      key={todo?.id}
+                      draggable="true"
+                      onDragStart={(event) =>
+                        handleDragStart(event, todo, "todos")
+                      }
+                      className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      {todo?.label?.name}
-                    </span>
-                    <div className="my-2 font-medium">
-                      <h5>{todo?.title}</h5>
-                      <p className="text-sm">{todo?.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold"> {todo?.date}</p>
-                      <div
-                        className="tooltip tooltip-accent"
-                        data-tip={todo?.assignee?.name}
+                      <span
+                        style={{ backgroundColor: todo?.label?.colorCode }}
+                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
                       >
-                        <img
-                          src={todo?.assignee?.avatar}
-                          alt="user profile"
-                          className="rounded-full w-7 h-7"
-                        />
+                        {todo?.label?.name}
+                      </span>
+                      <div className="my-2 font-medium">
+                        <h5>{todo?.title}</h5>
+                        <p className="text-sm">{todo?.description}</p>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold"> {todo?.date}</p>
+                        <div
+                          className="tooltip tooltip-accent"
+                          data-tip={todo?.assignee?.name}
+                        >
+                          <img
+                            src={todo?.assignee?.avatar}
+                            alt="user profile"
+                            className="rounded-full w-7 h-7"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
-          {/* in progress container */}
-          <div
-            className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
-            onDragOver={handleDragOver}
-            onDrop={(event) => handleDrop(event, "progress")}
-          >
-            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
-                />
-              </svg>
-              <p>In Progress</p>
-            </h2>
-            {/* for todo list */}
-            <ul className="flex flex-col gap-5 p-4" id="progress">
-              {boards[currentBoard]?.progress?.map((todo) => {
-                return (
-                  <li
-                    key={todo?.id}
-                    draggable="true"
-                    onDragStart={(event) =>
-                      handleDragStart(event, todo, "progress")
-                    }
-                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
-                  >
-                    <span
-                      style={{ backgroundColor: todo?.label?.colorCode }}
-                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+            {/* in progress container */}
+            <div
+              className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
+              onDragOver={handleDragOver}
+              onDrop={(event) => handleDrop(event, "progress")}
+            >
+              <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
+                  />
+                </svg>
+                <p>In Progress</p>
+              </h2>
+              {/* for todo list */}
+              <ul className="flex flex-col gap-5 p-4" id="progress">
+                {boards[currentBoard]?.progress?.map((todo) => {
+                  return (
+                    <li
+                      key={todo?.id}
+                      draggable="true"
+                      onDragStart={(event) =>
+                        handleDragStart(event, todo, "progress")
+                      }
+                      className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      {todo?.label?.name}
-                    </span>
-                    <div className="my-2 font-medium">
-                      <h5>{todo?.title}</h5>
-                      <p className="text-sm">{todo?.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold"> {todo?.date}</p>
-                      <div
-                        className="tooltip tooltip-accent"
-                        data-tip={todo?.assignee?.name}
+                      <span
+                        style={{ backgroundColor: todo?.label?.colorCode }}
+                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
                       >
-                        <img
-                          src={todo?.assignee?.avatar}
-                          alt="user profile"
-                          className="rounded-full w-7 h-7"
-                        />
+                        {todo?.label?.name}
+                      </span>
+                      <div className="my-2 font-medium">
+                        <h5>{todo?.title}</h5>
+                        <p className="text-sm">{todo?.description}</p>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold"> {todo?.date}</p>
+                        <div
+                          className="tooltip tooltip-accent"
+                          data-tip={todo?.assignee?.name}
+                        >
+                          <img
+                            src={todo?.assignee?.avatar}
+                            alt="user profile"
+                            className="rounded-full w-7 h-7"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
-          {/* for review container */}
-          <div
-            className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
-            onDragOver={handleDragOver}
-            onDrop={(event) => handleDrop(event, "review")}
-          >
-            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-                />
-              </svg>
-              <p>Review</p>
-            </h2>
-            {/* for todo list */}
-            <ul className="flex flex-col gap-5 p-4" id="review">
-              {boards[currentBoard]?.review?.map((todo) => {
-                return (
-                  <li
-                    key={todo?.id}
-                    draggable="true"
-                    onDragStart={(event) =>
-                      handleDragStart(event, todo, "review")
-                    }
-                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
-                  >
-                    <span
-                      style={{ backgroundColor: todo?.label?.colorCode }}
-                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+            {/* for review container */}
+            <div
+              className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
+              onDragOver={handleDragOver}
+              onDrop={(event) => handleDrop(event, "review")}
+            >
+              <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                  />
+                </svg>
+                <p>Review</p>
+              </h2>
+              {/* for todo list */}
+              <ul className="flex flex-col gap-5 p-4" id="review">
+                {boards[currentBoard]?.review?.map((todo) => {
+                  return (
+                    <li
+                      key={todo?.id}
+                      draggable="true"
+                      onDragStart={(event) =>
+                        handleDragStart(event, todo, "review")
+                      }
+                      className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      {todo?.label?.name}
-                    </span>
-                    <div className="my-2 font-medium">
-                      <h5>{todo?.title}</h5>
-                      <p className="text-sm">{todo?.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold"> {todo?.date}</p>
-                      <div
-                        className="tooltip tooltip-accent"
-                        data-tip={todo?.assignee?.name}
+                      <span
+                        style={{ backgroundColor: todo?.label?.colorCode }}
+                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
                       >
-                        <img
-                          src={todo?.assignee?.avatar}
-                          alt="user profile"
-                          className="rounded-full w-7 h-7"
-                        />
+                        {todo?.label?.name}
+                      </span>
+                      <div className="my-2 font-medium">
+                        <h5>{todo?.title}</h5>
+                        <p className="text-sm">{todo?.description}</p>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold"> {todo?.date}</p>
+                        <div
+                          className="tooltip tooltip-accent"
+                          data-tip={todo?.assignee?.name}
+                        >
+                          <img
+                            src={todo?.assignee?.avatar}
+                            alt="user profile"
+                            className="rounded-full w-7 h-7"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
-          {/* completed container */}
-          <div
-            className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
-            onDragOver={handleDragOver}
-            onDrop={(event) => handleDrop(event, "done")}
-          >
-            <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"
-                />
-              </svg>
-              <p>Done</p>
-            </h2>
-            {/* for todo list */}
-            <ul className="flex flex-col gap-5 p-4" id="completed">
-              {boards[0]?.done?.map((todo) => {
-                return (
-                  <li
-                    key={todo?.id}
-                    draggable="true"
-                    onDragStart={(event) =>
-                      handleDragStart(event, todo, "done")
-                    }
-                    className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
-                  >
-                    <span
-                      style={{ backgroundColor: todo?.label?.colorCode }}
-                      className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+            {/* completed container */}
+            <div
+              className="self-stretch flex-1 rounded-md shadow-md min-w-[300px]"
+              onDragOver={handleDragOver}
+              onDrop={(event) => handleDrop(event, "done")}
+            >
+              <h2 className="flex items-center justify-center gap-1 py-2 text-lg font-bold text-teal-500 border-b-[1.5px] border-gray-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12"
+                  />
+                </svg>
+                <p>Done</p>
+              </h2>
+              {/* for todo list */}
+              <ul className="flex flex-col gap-5 p-4" id="completed">
+                {boards[0]?.done?.map((todo) => {
+                  return (
+                    <li
+                      key={todo?.id}
+                      draggable="true"
+                      onDragStart={(event) =>
+                        handleDragStart(event, todo, "done")
+                      }
+                      className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      {todo?.label?.name}
-                    </span>
-                    <div className="my-2 font-medium">
-                      <h5>{todo?.title}</h5>
-                      <p className="text-sm">{todo?.description}</p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold"> {todo?.date}</p>
-                      <div
-                        className="tooltip tooltip-accent"
-                        data-tip={todo?.assignee?.name}
+                      <span
+                        style={{ backgroundColor: todo?.label?.colorCode }}
+                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
                       >
-                        <img
-                          src={todo?.assignee?.avatar}
-                          alt="user profile"
-                          className="rounded-full w-7 h-7"
-                        />
+                        {todo?.label?.name}
+                      </span>
+                      <div className="my-2 font-medium">
+                        <h5>{todo?.title}</h5>
+                        <p className="text-sm">{todo?.description}</p>
                       </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-semibold"> {todo?.date}</p>
+                        <div
+                          className="tooltip tooltip-accent"
+                          data-tip={todo?.assignee?.name}
+                        >
+                          <img
+                            src={todo?.assignee?.avatar}
+                            alt="user profile"
+                            className="rounded-full w-7 h-7"
+                          />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center justify-center w-full h-full text-xl font-bold">
+            Create a new board to start{" "}
+            <span className="ml-2 text-2xl text-accent">:)</span>
+          </div>
+        )}
       </main>
     </div>
   );
