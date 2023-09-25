@@ -63,6 +63,7 @@ const Data = {
   ],
   boards: [
     {
+      id: uuid(),
       name: "Default Board",
       todos: [
         {
