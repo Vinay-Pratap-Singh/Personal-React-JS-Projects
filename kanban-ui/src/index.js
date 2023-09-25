@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { Toaster } from "react-hot-toast";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // creating a context for data
@@ -10,6 +11,7 @@ export const ContextData = createContext();
 
 root.render(
   <React.StrictMode>
+    <Toaster />
     <App />
   </React.StrictMode>
 );

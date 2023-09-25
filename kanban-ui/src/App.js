@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import Data from "./Database/Data";
+import toast from "react-hot-toast";
 
 const App = () => {
-  const { themes, boards: myboards } = Data;
+  const { themes, boards: myboards, labels, assignee } = Data;
   const [boards, setBoards] = useState([...myboards]);
   const [currentBoard, setCurrentBoard] = useState(0);
   const [currentTheme, setCurrentTheme] = useState(
     localStorage.getItem("theme") || themes[0]
   );
+  const newBoardRef = useRef();
+  const [newTaskData, setNewTaskData] = useState({
+    id: "",
+    label: labels[0],
+    title: "",
+    description: "",
+    date: "",
+    assignee: assignee[0],
+  });
 
   // function to store the dragged item details
   const handleDragStart = (event, item, targetColumn) => {
@@ -62,6 +72,50 @@ const App = () => {
     Data?.boards?.splice(currentBoard, 1);
     setBoards([...Data?.boards]);
     setCurrentBoard(0);
+    toast.success("Board deleted successfully");
+  };
+
+  // function to add new board
+  const addNewBoard = () => {
+    if (!newBoardRef.current?.value || newBoardRef.current?.value?.length < 4) {
+      toast.error("Please enter a valid board name");
+      return;
+    }
+    Data.boards.push({
+      id: uuid(),
+      todos: [],
+      progress: [],
+      done: [],
+      review: [],
+      name: newBoardRef.current?.value,
+    });
+    newBoardRef.current.value = "";
+    setBoards([...Data?.boards]);
+    toast.success("Board added successfully");
+  };
+
+  // function to handle the addition of new task
+  const addNewTask = () => {
+    if (!newTaskData?.title || !newTaskData?.description) {
+      toast.error("All fields are mandatory");
+      return;
+    }
+    newTaskData.id = uuid();
+    newTaskData.date = new Date().toLocaleString();
+
+    Data.boards[currentBoard].todos.push({ ...newTaskData });
+    setBoards([...Data?.boards]);
+    toast.success("Task added successfully");
+
+    // reset the task data
+    setNewTaskData({
+      id: "",
+      label: labels[0],
+      title: "",
+      description: "",
+      date: "",
+      assignee: assignee[0],
+    });
   };
 
   return (
@@ -135,7 +189,7 @@ const App = () => {
                               currentBoard === index ? "block" : "hidden"
                             }`}
                             onClick={() =>
-                              document.getElementById("my_modal_4").showModal()
+                              document.getElementById("my_modal_1").showModal()
                             }
                           >
                             <svg
@@ -154,7 +208,7 @@ const App = () => {
                             </svg>
                           </button>
                           <dialog
-                            id="my_modal_4"
+                            id="my_modal_1"
                             className="modal modal-bottom sm:modal-middle"
                             key={board?.id}
                           >
@@ -209,13 +263,66 @@ const App = () => {
               </ul>
             </div>
 
-            {/* button to add new board */}
+            {/* button to add new board and its dialog */}
             <button
               type="button"
               className="py-2 font-semibold text-white btn btn-md btn-accent"
+              onClick={() => document.getElementById("my_modal_2").showModal()}
             >
               Add new board
             </button>
+            <dialog
+              id="my_modal_2"
+              className="modal modal-bottom sm:modal-middle"
+            >
+              <div className="w-full text-black sm:w-72 md:w-96 modal-box">
+                <div className="flex items-center justify-center py-5 bg-teal-100 rounded-lg">
+                  <div className="p-5 text-white bg-teal-500 rounded-full">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-16 h-16 lg:w-20 lg:h-20"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="mt-5 text-lg font-bold">Board name</h3>
+                <label htmlFor="newBoardName" className="w-full">
+                  <input
+                    ref={newBoardRef}
+                    type="text"
+                    name="newBoardName"
+                    id="newBoardName"
+                    placeholder="Default board"
+                    className="w-full p-2 mt-2"
+                    required
+                    minLength={4}
+                  />
+                </label>
+                <div className="modal-action">
+                  <form method="dialog" className="flex flex-col w-full gap-3">
+                    <button
+                      type="submit"
+                      className="text-white bg-teal-500 btn hover:bg-teal-600"
+                      onClick={addNewBoard}
+                    >
+                      create
+                    </button>
+                    <button className="btn" type="submit">
+                      Close
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>
@@ -224,16 +331,133 @@ const App = () => {
       <main className="container flex flex-col gap-5 py-5 overflow-x-hidden">
         {/* for header */}
         <header className="flex items-center self-end px-5 space-x-5">
-          {/* add new todo */}
+          {/* add new todo and its dialog box */}
           <button
             type="button"
             className="font-semibold text-white btn lg:btn-md btn-sm btn-accent"
+            onClick={() => document.getElementById("my_modal_3").showModal()}
           >
-            Add new todo
+            Add new task
           </button>
+          <dialog
+            id="my_modal_3"
+            className="modal modal-bottom sm:modal-middle"
+          >
+            <div className="flex flex-col w-full gap-2 text-black sm:w-72 md:w-96 modal-box">
+              <h3 className="text-lg font-bold">Add new task</h3>
+              {/* for task name */}
+              <label htmlFor="taskName" className="w-full">
+                Task name
+                <input
+                  ref={newBoardRef}
+                  type="text"
+                  name="taskName"
+                  id="taskName"
+                  placeholder="Work on provided data"
+                  className="w-full p-2 mt-1"
+                  required
+                  minLength={4}
+                  onChange={(event) =>
+                    setNewTaskData({
+                      ...newTaskData,
+                      title: event?.target?.value,
+                    })
+                  }
+                  value={newTaskData?.title}
+                />
+              </label>
+
+              {/* for task description */}
+              <label htmlFor="taskDescription" className="w-full">
+                Task Description
+                <textarea
+                  name="taskDescription"
+                  id="taskDescription"
+                  className="w-full h-20 p-2 mt-1 resize-none"
+                  placeholder="Enter the task description"
+                  required
+                  minLength={20}
+                  onChange={(event) =>
+                    setNewTaskData({
+                      ...newTaskData,
+                      description: event?.target?.value,
+                    })
+                  }
+                  value={newTaskData?.description}
+                />
+              </label>
+
+              {/* for task priority */}
+              <label htmlFor="taskPriority">
+                <select
+                  name="taskPriority"
+                  id="taskPriority"
+                  className="w-full max-w-xs select select-bordered"
+                  required
+                  onChange={(event) =>
+                    setNewTaskData({
+                      ...newTaskData,
+                      label: JSON.parse(event?.target?.value),
+                    })
+                  }
+                  value={newTaskData?.label}
+                >
+                  {labels?.length &&
+                    labels?.map((label) => {
+                      return (
+                        <option key={label?.id} value={JSON.stringify(label)}>
+                          {label?.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </label>
+
+              {/* for assigned to */}
+              <label htmlFor="assignedTo">
+                <select
+                  name="assignedTo"
+                  id="assignedTo"
+                  className="w-full max-w-xs select select-bordered"
+                  required
+                  onChange={(event) =>
+                    setNewTaskData({
+                      ...newTaskData,
+                      assignee: JSON.parse(event.target.value),
+                    })
+                  }
+                  value={newTaskData?.assignee}
+                >
+                  {assignee?.length &&
+                    assignee?.map((user) => {
+                      return (
+                        <option key={user?.id} value={JSON.stringify(user)}>
+                          {user?.name}
+                        </option>
+                      );
+                    })}
+                </select>
+              </label>
+
+              <div className="modal-action">
+                <form method="dialog" className="w-full space-y-2">
+                  <button
+                    type="submit"
+                    className="w-full text-white bg-teal-500 btn hover:bg-teal-600"
+                    onClick={addNewTask}
+                  >
+                    create
+                  </button>
+                  <button className="w-full btn" type="submit">
+                    Close
+                  </button>
+                </form>
+              </div>
+            </div>
+          </dialog>
 
           {/* for changing the theme */}
-          <div className="dropdown dropdown-hover dropdown-bottom dropdown-end ">
+          <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
             <label
               tabIndex={0}
               className="m-1 font-semibold btn btn-sm lg:btn-md text-accent"
