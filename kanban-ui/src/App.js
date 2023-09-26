@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { v4 as uuid } from "uuid";
 import Data from "./Database/Data";
 import toast from "react-hot-toast";
@@ -10,7 +10,7 @@ const App = () => {
   const [currentTheme, setCurrentTheme] = useState(
     localStorage.getItem("theme") || themes[0]
   );
-  const newBoardRef = useRef();
+  const [newBoardName, setNewBoardName] = useState("");
   const [newTaskData, setNewTaskData] = useState({
     id: "",
     label: labels[0],
@@ -73,11 +73,14 @@ const App = () => {
     setBoards([...Data?.boards]);
     setCurrentBoard(0);
     toast.success("Board deleted successfully");
+
+    // setting the data into local storage
+    localStorage.setItem("boards", JSON.stringify(Data.boards));
   };
 
   // function to add new board
   const addNewBoard = () => {
-    if (!newBoardRef.current?.value || newBoardRef.current?.value?.length < 4) {
+    if (!newBoardName || newBoardName?.length < 4) {
       toast.error("Please enter a valid board name");
       return;
     }
@@ -87,11 +90,14 @@ const App = () => {
       progress: [],
       done: [],
       review: [],
-      name: newBoardRef.current?.value,
+      name: newBoardName,
     });
-    newBoardRef.current.value = "";
     setBoards([...Data?.boards]);
     toast.success("Board added successfully");
+    setNewBoardName("");
+
+    // setting the data into local storage
+    localStorage.setItem("boards", JSON.stringify(Data.boards));
   };
 
   // function to handle the addition of new task
@@ -116,6 +122,17 @@ const App = () => {
       date: "",
       assignee: assignee[0],
     });
+
+    // setting the data into local storage
+    localStorage.setItem("boards", JSON.stringify(Data.boards));
+  };
+
+  // function to handle the deletion of task
+  const handleTaskDelete = (operation, index) => {
+    Data.boards[currentBoard][operation].splice(index, 1);
+    localStorage.setItem("boards", JSON.stringify(Data?.boards));
+    setBoards([...Data?.boards]);
+    toast.success(`Task from ${operation} deleted successfully`);
   };
 
   return (
@@ -297,14 +314,13 @@ const App = () => {
                 <h3 className="mt-5 text-lg font-bold">Board name</h3>
                 <label htmlFor="newBoardName" className="w-full">
                   <input
-                    ref={newBoardRef}
                     type="text"
                     name="newBoardName"
                     id="newBoardName"
                     placeholder="Default board"
                     className="w-full p-2 mt-2"
-                    required
-                    minLength={4}
+                    onChange={(event) => setNewBoardName(event.target.value)}
+                    value={newBoardName}
                   />
                 </label>
                 <div className="modal-action">
@@ -334,7 +350,9 @@ const App = () => {
           {/* add new todo and its dialog box */}
           <button
             type="button"
-            className="font-semibold text-white btn lg:btn-md btn-sm btn-accent"
+            className={`font-semibold text-white btn lg:btn-md btn-sm btn-accent ${
+              Data?.boards?.length ? "block" : "hidden"
+            }`}
             onClick={() => document.getElementById("my_modal_3").showModal()}
           >
             Add new task
@@ -349,7 +367,6 @@ const App = () => {
               <label htmlFor="taskName" className="w-full">
                 Task name
                 <input
-                  ref={newBoardRef}
                   type="text"
                   name="taskName"
                   id="taskName"
@@ -531,7 +548,7 @@ const App = () => {
               </h2>
               {/* for todos list */}
               <ul className="flex flex-col gap-5 p-4" id="todo">
-                {boards[currentBoard]?.todos?.map((todo) => {
+                {boards[currentBoard]?.todos?.map((todo, index) => {
                   return (
                     <li
                       key={todo?.id}
@@ -541,12 +558,33 @@ const App = () => {
                       }
                       className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      <span
-                        style={{ backgroundColor: todo?.label?.colorCode }}
-                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
-                      >
-                        {todo?.label?.name}
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{ backgroundColor: todo?.label?.colorCode }}
+                          className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                        >
+                          {todo?.label?.name}
+                        </span>
+                        <button
+                          className="text-red-500"
+                          onClick={() => handleTaskDelete("todos", index)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                       <div className="my-2 font-medium">
                         <h5>{todo?.title}</h5>
                         <p className="text-sm">{todo?.description}</p>
@@ -595,7 +633,7 @@ const App = () => {
               </h2>
               {/* for todo list */}
               <ul className="flex flex-col gap-5 p-4" id="progress">
-                {boards[currentBoard]?.progress?.map((todo) => {
+                {boards[currentBoard]?.progress?.map((todo, index) => {
                   return (
                     <li
                       key={todo?.id}
@@ -605,12 +643,33 @@ const App = () => {
                       }
                       className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      <span
-                        style={{ backgroundColor: todo?.label?.colorCode }}
-                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
-                      >
-                        {todo?.label?.name}
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{ backgroundColor: todo?.label?.colorCode }}
+                          className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                        >
+                          {todo?.label?.name}
+                        </span>
+                        <button
+                          className="text-red-500"
+                          onClick={() => handleTaskDelete("progress", index)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                       <div className="my-2 font-medium">
                         <h5>{todo?.title}</h5>
                         <p className="text-sm">{todo?.description}</p>
@@ -659,7 +718,7 @@ const App = () => {
               </h2>
               {/* for todo list */}
               <ul className="flex flex-col gap-5 p-4" id="review">
-                {boards[currentBoard]?.review?.map((todo) => {
+                {boards[currentBoard]?.review?.map((todo, index) => {
                   return (
                     <li
                       key={todo?.id}
@@ -669,12 +728,33 @@ const App = () => {
                       }
                       className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      <span
-                        style={{ backgroundColor: todo?.label?.colorCode }}
-                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
-                      >
-                        {todo?.label?.name}
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{ backgroundColor: todo?.label?.colorCode }}
+                          className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                        >
+                          {todo?.label?.name}
+                        </span>
+                        <button
+                          className="text-red-500"
+                          onClick={() => handleTaskDelete("review", index)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                       <div className="my-2 font-medium">
                         <h5>{todo?.title}</h5>
                         <p className="text-sm">{todo?.description}</p>
@@ -723,7 +803,7 @@ const App = () => {
               </h2>
               {/* for todo list */}
               <ul className="flex flex-col gap-5 p-4" id="completed">
-                {boards[0]?.done?.map((todo) => {
+                {boards[0]?.done?.map((todo, index) => {
                   return (
                     <li
                       key={todo?.id}
@@ -733,12 +813,33 @@ const App = () => {
                       }
                       className="p-2 text-teal-500 rounded-md shadow-sm cursor-move item"
                     >
-                      <span
-                        style={{ backgroundColor: todo?.label?.colorCode }}
-                        className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
-                      >
-                        {todo?.label?.name}
-                      </span>
+                      <div className="flex items-center justify-between">
+                        <span
+                          style={{ backgroundColor: todo?.label?.colorCode }}
+                          className="px-2 py-1 text-xs font-semibold text-white rounded-md w-fit"
+                        >
+                          {todo?.label?.name}
+                        </span>
+                        <button
+                          className="text-red-500"
+                          onClick={() => handleTaskDelete("done", index)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                       <div className="my-2 font-medium">
                         <h5>{todo?.title}</h5>
                         <p className="text-sm">{todo?.description}</p>
